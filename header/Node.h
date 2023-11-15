@@ -1,3 +1,5 @@
+#ifndef Node_h
+#define Node_h
 #include <math.h>
 #include <time.h>
 #include <unistd.h>
@@ -37,3 +39,4 @@ class Node
         void DrawTitle(SDL_Renderer&, bool);
         void DrawEnding(SDL_Renderer&,bool);
 };
+#endif

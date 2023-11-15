@@ -99,3 +99,14 @@ void Map::SetDefault(const int value)
         }
     }
 }
+Node* Map::FindNear(Node& n, int angle)
+{
+    switch (angle)
+    {
+        case 0: return this->getNode(n.GetX() + 2, n.GetY() + 1);
+        case 90: return this->getNode(n.GetX() + 1, n.GetY());
+        case 180: return this->getNode(n.GetX(), n.GetY() + 1);
+        case 270: return this->getNode(n.GetX() + 1, n.GetY() + 2);
+    }
+    return NULL;
+}

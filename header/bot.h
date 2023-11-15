@@ -10,7 +10,7 @@ int InitBoatAng(int i)
         angle = 0;
     return angle;
 }
-Node InitNodePos(int i)
+Node InitNodePos(int i,Map& m)
 {
     srand(time(NULL) *(getpid() + i));
     int x = 0, y = 0, angle = InitBoatAng(i), w, h,
@@ -21,6 +21,14 @@ Node InitNodePos(int i)
         y = 1 + rand() % 6;
         w = Boat::ListOfBoatSize[i]*Node::nodeSize;
         h = Node::nodeSize;
+        for(int j = 0; j < Boat::ListOfBoatSize[i]; j++)
+            {
+                if(m.getNode(x + j, y)->GetPlace()==0)    
+                    m.getNode(x + j, y)->GetPlace() += 1;
+                else {
+                    return Node(-1);
+                }
+            }
     }
     else
     {
@@ -28,6 +36,14 @@ Node InitNodePos(int i)
         y = 1 + rand() % temp;
         w = Node::nodeSize;
         h = Boat::ListOfBoatSize[i]*Node::nodeSize;
+        for(int j = 0; j < Boat::ListOfBoatSize[i]; j++)
+            {
+                if(m.getNode(x , y+j)->GetPlace()==0)    
+                    m.getNode(x, y+j)->GetPlace() += 1;
+                else {
+                    return Node(-1);
+                }
+            }
     }
 
     return Node(x, y, x*Node::nodeSize, y*Node::nodeSize, w, h, angle, 0);

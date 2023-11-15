@@ -17,4 +17,5 @@ class Map : protected Node
         bool InRange(const int, const int);
         bool PlaceInMap();
         void SetDefault(const int);
+        Node* FindNear(Node&, int angle);
 };

@@ -1,11 +1,13 @@
 #include <iostream>
 #include "header\bot.h"
+#include "header\Stack.h"
 const int WIDTH = 1000, HEIGHT = 600;
 
 int main( int argc, char *argv[])
 {
     bool GameIsRunning = true, leftButtonDown = false, StartGame = false, PlayGame = false, endGame = false,decide=false;
-    int turn = 0;
+    int turn = 0,count=1;
+    Stack HuntList;
     SDL_Event event;
     SDL_Point mousePos;
     Node* selected_rect = NULL;
@@ -110,11 +112,7 @@ int main( int argc, char *argv[])
                                 bPlayer.UpdatePos();
                                 bPlayer = bPlayer;
                                 bPlayer.ChangePos(18, 2, Node::nodeSize/2);
-                                bPlayer.PointInBoat(m2);
-                                for(int i=0;i<3;i++)
-                                {
-                                    *(bBot.GetBoat(i))=InitNodePos(i);
-                                }      
+                                bPlayer.PointInBoat(m2);  
                             }
                             else
                             {
@@ -137,6 +135,7 @@ int main( int argc, char *argv[])
                             m2(18, 2, Node::nodeSize/2);
                             m3.SetDefault(0);
                             endGame = false;
+                            count=0;
                             decide=false;
                         }
                         if(SDL_PointInRect(&mousePos, home_button.getRect()))
@@ -150,6 +149,7 @@ int main( int argc, char *argv[])
                             m2(18, 2, Node::nodeSize/2);
                             m3.SetDefault(0);
                             endGame = false;
+                            count=0;
                         }
                     }
                     
@@ -189,6 +189,13 @@ int main( int argc, char *argv[])
         // clear window
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
+        if(count<Boat::boatNums)
+        {
+            *(bBot.GetBoat(count))=InitNodePos(count,m1);
+            if(bBot.GetBoat(count)->GetX()!=-1);
+                count++;
+        }
+  
 
         //Title Screen
         titleScreen.DrawTitle(*renderer, PlayGame);
@@ -220,18 +227,33 @@ int main( int argc, char *argv[])
         else if(turn == 1)
         {
             int x, y, seed = 1607;
-            do
-            {
-                x = GenPos(seed);
-                seed += 34;
-                y = GenPos(seed);
-                shootNode = m2.getNode(x, y);
-            } while (shootNode->GetHit() == 0 || shootNode->GetHit() == 1);
+            // if(HuntList.ChechNull())
+            // {
+            //     Node Find=HuntList.Pop();
+            //     if(Find.GetX() != -1)
+            //         shootNode=m2.getNode(Find.GetX()+1,Find.GetY()+1);
+            // }
+            // else{
+                do
+                {
+                    x = GenPos(seed);
+                    seed += 34;
+                    y = GenPos(seed);
+                    shootNode = m2.getNode(x, y);
+                } while (shootNode->GetHit() == 0 || shootNode->GetHit() == 1); 
+            //}
+
             
             // shootNode = bPlayer.PointInBoat(x, y, m2, Node::nodeSize/2);
             if(shootNode->GetPlace() == 1)
             {
                 shootNode->GetHit() = 1;
+                // for(int i=0;i<4;i++)
+                // {
+                //     HuntList.Push(*m2.FindNear(*shootNode, i*90));
+                // }
+                cout<<endl;
+                //HuntList.DisplayStack();
                 bPlayer.GetisSink() += 1;
             }
             else
