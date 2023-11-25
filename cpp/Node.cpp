@@ -1,8 +1,8 @@
-#include "D:\Downloads\Battle-Ship-main\header\Node.h"
+#include "D:\Downloads\TEST\Battle-Ship-main org - Copy\header\Node.h"
 int Node::nodeSize = 80;
 Node::Node(int xVal, int yVal, int x, int y, int w, int h, float ang, int hit, int place)
     : xVal(xVal), yVal(yVal), angle(ang), isPlace(place)
-{ 
+{
     this->rect.x = x;
     this->rect.y = y;
     this->rect.w = w;
@@ -88,23 +88,17 @@ void Node::Rotation()
 {
     if(this->angle == 0)
     {
-        {
-            this->angle = 90;
-            this->SwapWH();
-        }
+        this->angle = 90;
     }
     else
     {
-        {
-            this->angle = 0;
-            this->SwapWH();
-        }
+        this->angle = 0;
     }
 }
 bool Node::InRange(const int x, const int y)
 {
-    return (x >= 3 && x <= 9-(this->rect.w/Node::nodeSize)
-             && y >= 1 && y <= 7-(this->rect.h/Node::nodeSize));
+    return (x >= 3 && y >= 1
+            && x <= 9-(this->rect.w/Node::nodeSize) && y <= 7-(this->rect.h/Node::nodeSize));
 }
 void Node::SwapWH()
 {
@@ -151,12 +145,4 @@ void Node::DrawTitle(SDL_Renderer& rend, bool isPlay)
         gT.Render(rend, &this->rect, this->angle);
     }
     
-}
-void Node::DrawEnding(SDL_Renderer& rend,bool result)
-{
-    Graphics gEScreen("images/gameover.bmp",rend);
-    if(result)
-        gEScreen("images/win.bmp", rend);
-    gEScreen.Render(rend,&this->rect);
-
 }

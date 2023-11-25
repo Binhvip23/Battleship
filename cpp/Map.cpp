@@ -1,4 +1,4 @@
-#include "D:\Downloads\Battle-Ship-main\header\Map.h"
+#include "D:\Downloads\TEST\Battle-Ship-main org - Copy\header\Map.h"
 
 int Map::mapSize = 6;
 
@@ -13,7 +13,7 @@ Map::Map(const int x0, const int y0, const int size)
         *(this->m + i) = new Node[Map::mapSize];
         for(int j = 0; j < Map::mapSize; j++)
         {
-            *(*(this->m + i) + j) = Node(j, i, (j+x0)*size, (i+y0)*size, size, size, 0.0f);
+            *(*(this->m + i) + j) = Node(j + 1, i + 1, (j+x0)*size, (i+y0)*size, size, size, 0.0f);
         }
     }
 }
@@ -71,10 +71,11 @@ bool Map::PlaceInMap()
     {
         for(int j = 0; j < Map::mapSize; j++)
         {
-            if((*(this->m + i) + j)->GetPlace() >1)
+            if((*(this->m + i) + j)->GetPlace() > 1)
                 return false;
         }
     }
+
     return true;
 }
 Map& Map::operator()(const int x0, const int y0, const int size)
@@ -103,10 +104,10 @@ Node* Map::FindNear(Node& n, int angle)
 {
     switch (angle)
     {
-        case 0: return this->getNode(n.GetX() + 2, n.GetY() + 1);
-        case 90: return this->getNode(n.GetX() + 1, n.GetY());
-        case 180: return this->getNode(n.GetX(), n.GetY() + 1);
-        case 270: return this->getNode(n.GetX() + 1, n.GetY() + 2);
+        case 0: return this->getNode(n.GetX() + 1, n.GetY());
+        case 90: return this->getNode(n.GetX(), n.GetY() - 1);
+        case 180: return this->getNode(n.GetX() - 1, n.GetY());
+        case 270: return this->getNode(n.GetX(), n.GetY() + 1);
     }
     return NULL;
 }

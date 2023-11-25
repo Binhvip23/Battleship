@@ -1,4 +1,4 @@
-#include "D:\Downloads\Battle-Ship-main\header\Boat.h"
+#include "D:\Downloads\TEST\Battle-Ship-main org - Copy\header\Boat.h"
 int Boat::boatNums = 3;
 int Boat::ListOfBoatSize[3] = {2, 3, 3};
 int Boat::SinkBoat = 8; // 2 + 3 + 3

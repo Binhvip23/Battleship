@@ -37,6 +37,5 @@ class Node
         void DrawSB(SDL_Renderer&, bool, bool);
         void DrawPB(SDL_Renderer&, bool);
         void DrawTitle(SDL_Renderer&, bool);
-        void DrawEnding(SDL_Renderer&,bool);
 };
 #endif

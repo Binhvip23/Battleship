@@ -1,4 +1,4 @@
-#include "D:\Downloads\Battle-Ship-main\header\Stack.h"
+#include "D:\Downloads\TEST\Battle-Ship-main org - Copy\header\Stack.h"
 
 Stack::Stack()
 {
@@ -6,32 +6,34 @@ Stack::Stack()
     this->current=-1;
 }
 
-void Stack::Push(Node Node)
+void Stack::Push(Node& n)
 {
     this->current++;
     if(this->current<36)
     {
-        if(Node.GetHit() != 1 || Node.GetHit() != 0)
-            this->BotHunt[this->current]=Node;
+        if(n.GetHit() == -1)
+            this->BotHunt[this->current] = n;
+        else
+            this->current--;
     }
-    else 
+    else
     {
         cout<<"Stack full "<<endl;
         return;
     }
 }
-Node Stack::Pop()
+Node* Stack::Pop()
 {
     int check= this->current;
     if(check<0) 
     {
         cout<<"Stack empty "<<endl;
         this->BotHunt=nullptr;
-        return Node(-1);
+        return NULL;
     }
     else{
         this->current--;
-        return this->BotHunt[check];
+        return &this->BotHunt[check];
     }
 }
 Stack::~Stack()
@@ -39,7 +41,12 @@ Stack::~Stack()
     delete[] BotHunt;
 }
 bool Stack::ChechNull(){
-    return (this->current>-1);
+    return (this->current > -1);
+}
+void Stack::MakeNull()
+{
+    this->BotHunt = NULL;
+    this->current = -1;
 }
 void Stack::DisplayStack()
 {

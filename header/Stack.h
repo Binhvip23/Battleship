@@ -1,4 +1,3 @@
-
 #include "Node.h"
 
 class Stack
@@ -9,8 +8,9 @@ class Stack
     public:
         Stack();
         ~Stack();
-        void Push(Node);
-        Node Pop();
+        void Push(Node&);
+        Node* Pop();
         bool ChechNull();
+        void MakeNull();
         void DisplayStack();
 };
