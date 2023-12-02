@@ -1,17 +1,19 @@
 #include <iostream>
 #include "header\bot.h"
 #include "header\Stack.h"
+#include "header\memo.h"
+#include<conio.h>
 const int WIDTH = 1000, HEIGHT = 600;
 
 int main( int argc, char *argv[])
 {
     bool GameIsRunning = true, leftButtonDown = false, StartGame = false, PlayGame = true, endGame = false, win = false, stop = false;
-    int turn = 0, count = 0, hcount=0, lmao=0;
+    int turn = 0, count = 0, hcount=0,Oneloop=0,ValidConfigurationCounted=0;
     Stack HuntList,HuntList2;
     SDL_Event event;
     SDL_Point mousePos;
     Node* selected_rect = NULL;
-
+    Node* error_Node=new Node(-1);
     Node* shootNode = NULL;
 
     Node start_button = Node(0, 0, 800, 70, 140, 59);
@@ -22,6 +24,13 @@ int main( int argc, char *argv[])
     Node screen = Node(0, 0, 0, 0, 1000, 600);
     Node titleScreen = Node(0, 0, 0, 0, 1000, 600);
     Node endScreen = Node(0, 0, 275, 145, 450, 250);
+
+    ifstream myfile;
+    myfile.open ("output-of-random-placement.txt");
+    
+    memo Botmemo;
+    myfile>>Botmemo;
+    memo ShootingPlan(Botmemo);
 
     //Init SDL
     SDL_Init(SDL_INIT_VIDEO);
@@ -36,7 +45,7 @@ int main( int argc, char *argv[])
     Map m1(1, 1, Node::nodeSize);
     Map m2(18, 2, Node::nodeSize/2);
     Map m3(3, 1, Node::nodeSize);
-    
+    Map generate(1,1,Node::nodeSize);
 
     //Load image
     Graphics gRB("images/replay.bmp", *renderer);
@@ -191,30 +200,46 @@ int main( int argc, char *argv[])
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
         SDL_RenderClear(renderer);
 
-        if(count < Boat::boatNums && hcount<Boat::boatNums)
+        if(count < Boat::boatNums )
         {
-            *bBot.GetBoat(count) = InitNodePos(count, m1,2000,1,1);
-            *bPlayer.GetBoat(hcount)=InitNodePos(hcount,m3,4000,3,1);
+            *bBot.GetBoat(count) = InitNodePos(count,m1,generate,4000,1,1);
             if(bBot.GetBoat(count)->GetX() != -1)
             {
-                cout<<bBot.GetBoat(count)->GetX()<< " , "<<bBot.GetBoat(count)->GetY()<<endl;
+                // cout<<"\nDummy1 Ship Placement:";
+                // cout<<bBot.GetBoat(count)->GetX()<<" , "<<bBot.GetBoat(count)->GetY()<<endl;
                 count++;
-            }  
+            }
+            // if(count==3)
+            // {    
+            //     cout<<"\nDisplay Map 1:"<<endl;
+            //     m1.DisplayIsPlace();   
+            // }  
+        }
+        if(hcount<Boat::boatNums)
+        {
+            *bPlayer.GetBoat(hcount)=InitNodePos(hcount,m3,generate,2000,3,1);
             if(bPlayer.GetBoat(hcount)->GetX()!=-1)
             {
-                cout<<bPlayer.GetBoat(hcount)->GetX()<< " , "<<bPlayer.GetBoat(hcount)->GetY()<<endl;
+                // cout<<"\nDummy2 Ship Placement:";
+                // cout<<bPlayer.GetBoat(hcount)->GetX()-2<<" , "<<bPlayer.GetBoat(hcount)->GetY()<<endl;
                 hcount++;
             }
-            //cout << "Hi";
+            // if(hcount==3)
+            // {
+            //     cout<<"\nDisplay Map 3:"<<endl;
+            //     m3.DisplayIsPlace();//fixed
+            // }
         }
-        if(count==3 && hcount==3 && lmao==0 )   
+        if( count==3 && hcount==3 && Oneloop==0 )   
         {
             StartGame=true;
             bPlayer.UpdatePos();
             bPlayer = bPlayer;
             bPlayer.ChangePos(18, 2, Node::nodeSize/2);
-            lmao++;
             bPlayer.PointInBoat(m2);
+            // cout<<"\n Display Generate Map:"<<endl;
+            // generate.DisplayIsPlace();
+            Oneloop++;     
         }
         //Title Screen
         titleScreen.DrawTitle(*renderer, PlayGame);
@@ -225,7 +250,7 @@ int main( int argc, char *argv[])
         start_button.DrawSB(*renderer, StartGame, PlayGame);
         bPlayer.DrawBoat(*renderer, StartGame, PlayGame);
 
-        if(turn == 0 && endGame!=true && count>2 && hcount>2)
+        if(turn == 0 && endGame!=true && count>2 && hcount>2 && Oneloop==1)
         {
             // if(selected_rect != NULL && shootNode->GetHit() == -1)
             // {
@@ -250,33 +275,38 @@ int main( int argc, char *argv[])
             }
             else
             {
-                do
+                x = ShootingPlan.GetLargestNodeColum();
+                y = ShootingPlan.GetLargestNodeRow();
+                shootNode = m1.getNode(x, y);
+                cout<<endl<<"Dummy2 shoot: ";
+                cout<<shootNode->GetX()<<" , "<<shootNode->GetY();
+                // if (shootNode->GetHit() == 0 || shootNode->GetHit() == 1)
+                // {
+                //     shootNode=error_Node;
+                // }
+            }
+            ShootingPlan.SetValueto0(shootNode->GetX(),shootNode->GetY());
+            if(shootNode->GetX()!=-1)
+            {
+                if(shootNode->GetPlace() == 1)
                 {
-                    x = GenPos(seed);
-                    seed += 34;
-                    y = GenPos(seed);
-                    shootNode = m1.getNode(x, y);
-                } while (shootNode->GetHit() == 0 || shootNode->GetHit() == 1);
+                    shootNode->GetHit() = 1;
+                    bBot.GetisSink() += 1;
+                    cout<<endl<<"Dummy2 shoot: ";
+                    cout<<shootNode->GetX()<<" , "<<shootNode->GetY()<<" , "<<bBot.GetisSink();
+                    for(int i=0;i<4;i++)
+                    {
+                        HuntList2.Push(*m1.FindNear(*shootNode, i*90));
+                    }
+                    SDL_Delay(2000);
+                }
+                else
+                    shootNode->GetHit() = 0;
+                shootNode=NULL;   
+                turn = 1;
             }
-            
-            if(shootNode->GetPlace() == 1)
-            {
-                shootNode->GetHit() = 1;
-                bBot.GetisSink() += 1;
-                for(int i = 0; i < 4; i++)
-                    HuntList2.Push(*m1.FindNear(*shootNode, i*90));
-            }
-            else
-            {
-                SDL_Delay(1000);
-                shootNode->GetHit() = 0;
-            }
-            
-            shootNode = NULL;
-            
-            turn = 1;
         }
-        else if(turn == 1 && endGame!=true && hcount>2 && count>2)
+        else if(turn == 1 && endGame!=true  && count>2 && hcount>2 && Oneloop==1)
         {
             int x, y, seed = 1607;
             if(HuntList.ChechNull())
@@ -286,32 +316,36 @@ int main( int argc, char *argv[])
             }
             else
             {
-                do
+                x = GenPos(seed);
+                seed += 34;
+                y = GenPos(seed);
+                shootNode = m2.getNode(x, y);
+                if(shootNode->GetHit() == 0 || shootNode->GetHit() == 1)
                 {
-                    x = GenPos(seed);
-                    seed += 34;
-                    y = GenPos(seed);
-                    shootNode = m2.getNode(x, y);
-                } while (shootNode->GetHit() == 0 || shootNode->GetHit() == 1);
+                    shootNode=error_Node;
+                }
             }
-            
-            if(shootNode->GetPlace() == 1)
+            if(shootNode->GetX()!=-1)
             {
-                shootNode->GetHit() = 1;
-                bPlayer.GetisSink() += 1;
-                for(int i = 0; i < 4; i++)
-                    HuntList.Push(*m2.FindNear(*shootNode, i*90));
-                cout << endl;
+                if(shootNode->GetPlace() == 1)
+                {
+                    cout<<endl<<"Dummy1 shoot: ";
+                    shootNode->GetHit() = 1;
+                    bPlayer.GetisSink() += 1;
+                    cout<<shootNode->GetX()<<" , "<<shootNode->GetY()<<" , "<<bPlayer.GetisSink();
+                    for(int i=0;i<4;i++)
+                    {
+                        HuntList.Push(*m2.FindNear(*shootNode, i*90));
+                    }
+                    SDL_Delay(2000);
+                }
+                else
+                {
+                    shootNode->GetHit() = 0;
+                }
+                shootNode=NULL;   
+                turn = 0;
             }
-            else
-            {
-                SDL_Delay(1000);
-                shootNode->GetHit() = 0;
-            }
-            
-            shootNode = NULL;
-            
-            turn = 0;
         }
 
         m1.checkMap(*renderer, Node::nodeSize, StartGame);
@@ -331,27 +365,33 @@ int main( int argc, char *argv[])
             endGame = true;
         }
         //Check if game is end
-        if(endGame)
+        if(endGame )
         {
-            Graphics gEScreen;
-            if(win)
-            {
-                gEScreen("images/win.bmp", *renderer);
-            }
-            else
-            {
-                gEScreen("images/gameover.bmp", *renderer);
-            }
-            gEScreen.Render(*renderer, endScreen.getRect());
-            gRB.Render(*renderer, replay_button.getRect());
-            gHB.Render(*renderer, home_button.getRect());
-            turn = 0;
-        }
+            endGame=false;
+            turn =0;
+            StartGame = false;
+            count = 0;
+            hcount=0;
+            Oneloop=0;
+            for(int i=1;i<7;i++)
+                for(int j=1;j<7;j++)
+                    *(Botmemo.GetNode(j,i))+=(m2.getNode(j,i)->GetPlace())*5;
+            
 
+            bPlayer(3, 1, Node::nodeSize);
+            bBot(1, 1, Node::nodeSize);
+
+            m1(1, 1, Node::nodeSize);
+            m2(18, 2, Node::nodeSize/2);
+            m3(3,1,Node::nodeSize);
+            generate(1,1,Node::nodeSize);
+            HuntList.MakeNull();
+            HuntList2.MakeNull();
+            cout<<"\nNumber of Loops: "<<++ValidConfigurationCounted<<endl;
+            Botmemo.DisplayMemo();
+        }
         SDL_RenderPresent(renderer);
-        
     }
-   
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

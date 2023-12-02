@@ -18,4 +18,6 @@ class Map : protected Node
         bool PlaceInMap();
         void SetDefault(const int);
         Node* FindNear(Node&, int angle);
+        void DisplayIsPlace();
+        bool ValidShipPlacement(Node&,const int& length,const int& angle);
 };

@@ -8,13 +8,13 @@ Stack::Stack()
 
 void Stack::Push(Node& n)
 {
-    this->current++;
     if(this->current<36)
     {
-        if(n.GetHit() == -1)
+        if(n.GetX()!=-1 && n.GetHit() == -1 && this->CheckforDup(n))
+        {
+            this->current++;
             this->BotHunt[this->current] = n;
-        else
-            this->current--;
+        }
     }
     else
     {
@@ -45,8 +45,9 @@ bool Stack::ChechNull(){
 }
 void Stack::MakeNull()
 {
-    this->BotHunt = NULL;
-    this->current = -1;
+    int current= this->current;
+    for(;current>-1;current--)
+        this->Pop();
 }
 void Stack::DisplayStack()
 {
@@ -54,5 +55,16 @@ void Stack::DisplayStack()
     for(int i=x;i>=0;i--)
     {
         cout<<this->BotHunt[i].GetX()<<" , " <<this->BotHunt[i].GetY()<<endl;
+    }
+}
+bool Stack::CheckforDup(const Node& n)
+{
+    if(this->current==-1) return true;
+    else 
+    {
+        int current=this->current;
+        for(;current>=0;current--)
+            if(this->BotHunt[current]==n) return false;
+        return true;
     }
 }

@@ -13,4 +13,5 @@ class Stack
         bool ChechNull();
         void MakeNull();
         void DisplayStack();
+        bool CheckforDup(const Node&);
 };

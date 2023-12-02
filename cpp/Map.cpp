@@ -84,7 +84,7 @@ Map& Map::operator()(const int x0, const int y0, const int size)
     {
         for(int j = 0; j < Map::mapSize; j++)
         {
-            *(*(this->m + i) + j) = Node(j, i, (j+x0)*size, (i+y0)*size, size, size, 0.0f);
+            *(*(this->m + i) + j) = Node(j+1, i+1, (j+x0)*size, (i+y0)*size, size, size, 0.0f);
         }
     }
 
@@ -104,10 +104,57 @@ Node* Map::FindNear(Node& n, int angle)
 {
     switch (angle)
     {
-        case 0: return this->getNode(n.GetX() + 1, n.GetY());
-        case 90: return this->getNode(n.GetX(), n.GetY() - 1);
-        case 180: return this->getNode(n.GetX() - 1, n.GetY());
-        case 270: return this->getNode(n.GetX(), n.GetY() + 1);
+        case 0:
+        {
+            if(n.GetX()<6)return this->getNode(n.GetX() + 1, n.GetY());
+            break;
+        }
+        case 90:
+        {
+            if(n.GetY()>1)return this->getNode(n.GetX(), n.GetY() - 1);
+            break;
+        }
+        case 180:
+        {
+            if(n.GetX()>1)return this->getNode(n.GetX() - 1, n.GetY());
+            break;
+        } 
+        case 270:
+        {
+            if(n.GetY()<6)return this->getNode(n.GetX(), n.GetY() + 1);
+            break;
+        } 
     }
-    return NULL;
+    return new Node(-1);
+}
+void Map::DisplayIsPlace()
+{
+    for(int i = 1; i < 7; i++)
+    {        
+        cout << endl;
+        for(int j = 1; j < 7; j++)
+        {
+            int placeValue = this->getNode(j, i)->GetPlace();
+            if (placeValue == 0) {
+                cout << "( - ) "; 
+            } else if (placeValue == 1) {
+                cout << "( B ) ";  
+            }
+        }
+    }
+}
+bool Map::ValidShipPlacement(Node& n,const int& length,const int& angle)
+{
+    if(angle==0)
+    {
+        for(int i=0;i<length;i++)
+            if(this->getNode(n.GetX()+i,n.GetY())->GetPlace()==1) return false;
+        return true;
+    }
+    else
+    {
+        for(int i=0;i<length;i++)
+            if(this->getNode(n.GetX(),n.GetY()+i)->GetPlace()==1) return false;
+        return true;
+    }
 }
