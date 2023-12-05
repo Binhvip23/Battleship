@@ -5,7 +5,6 @@ class Stack
     protected:
         Node* BotHunt;
         int current;
-        int size;
     public:
         Stack();
         ~Stack();
