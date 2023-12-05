@@ -88,11 +88,17 @@ void Node::Rotation()
 {
     if(this->angle == 0)
     {
-        this->angle = 90;
+        {
+            this->angle = 90;
+            this->SwapWH();
+        }
     }
     else
     {
-        this->angle = 0;
+        {
+            this->angle = 0;
+            this->SwapWH();
+        }
     }
 }
 bool Node::InRange(const int x, const int y)

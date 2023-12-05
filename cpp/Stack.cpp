@@ -4,6 +4,7 @@ Stack::Stack()
 {
     this->BotHunt=new Node[36];
     this->current=-1;
+    this->size=0;
 }
 
 void Stack::Push(Node& n)
@@ -12,6 +13,7 @@ void Stack::Push(Node& n)
     {
         if(n.GetX()!=-1 && n.GetHit() == -1 && this->CheckforDup(n))
         {
+            this->size++;
             this->current++;
             this->BotHunt[this->current] = n;
         }
@@ -32,6 +34,7 @@ Node* Stack::Pop()
         return NULL;
     }
     else{
+        this->size--;
         this->current--;
         return &this->BotHunt[check];
     }
@@ -45,6 +48,7 @@ bool Stack::ChechNull(){
 }
 void Stack::MakeNull()
 {
+    this->size=0;
     int current= this->current;
     for(;current>-1;current--)
         this->Pop();

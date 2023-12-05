@@ -10,7 +10,7 @@ int InitBoatAng(int i)
         angle = 0;
     return angle;
 }
-Node InitNodePos(int i, Map& m,Map& generate,int seed,int x0,int y0 )
+Node InitNodePos(int i, Map& m,int seed,int x0,int y0 )
 {
     srand(time(NULL) *(getpid() + i+seed));
     int x = 0, y = 0, angle = InitBoatAng(i), w, h,
@@ -21,12 +21,11 @@ Node InitNodePos(int i, Map& m,Map& generate,int seed,int x0,int y0 )
         y =  y0+ rand() % 6;
         w = Boat::ListOfBoatSize[i]*Node::nodeSize;
         h = Node::nodeSize;
-        if(m.ValidShipPlacement((*m.getNode(x-x0+1,y-y0+1)),Boat::ListOfBoatSize[i],angle) && generate.ValidShipPlacement((*m.getNode(x-x0+1,y-y0+1)),Boat::ListOfBoatSize[i],angle))
+        if(m.ValidShipPlacement((*m.getNode(x-x0+1,y-y0+1)),Boat::ListOfBoatSize[i],angle) )
         {
             for(int j = 0; j < Boat::ListOfBoatSize[i]; j++)
             {
                 m.getNode(x + j-x0+1, y-y0+1)->GetPlace() += 1;
-                generate.getNode(x + j-x0+1, y-y0+1)->GetPlace() += 1;
             }                
         }
             else return Node(-1);
@@ -37,12 +36,11 @@ Node InitNodePos(int i, Map& m,Map& generate,int seed,int x0,int y0 )
         y = y0 + rand() % temp;
         w = Node::nodeSize;
         h = Boat::ListOfBoatSize[i]*Node::nodeSize;
-        if(m.ValidShipPlacement((*m.getNode(x-x0+1,y-y0+1)),Boat::ListOfBoatSize[i],angle) && generate.ValidShipPlacement((*m.getNode(x-x0+1,y-y0+1)),Boat::ListOfBoatSize[i],angle))
+        if(m.ValidShipPlacement((*m.getNode(x-x0+1,y-y0+1)),Boat::ListOfBoatSize[i],angle))
         {
             for(int j = 0; j < Boat::ListOfBoatSize[i]; j++)
             {
                 m.getNode(x-x0+1, y + j-y0+1)->GetPlace() += 1;
-                generate.getNode(x-x0+1, y + j-y0+1)->GetPlace() += 1;
             }   
         }
         else return Node(-1);

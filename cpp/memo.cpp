@@ -49,8 +49,8 @@ int memo::FindLargestValue()
             if(this->MapPlaceRecord[j][i]>largest) 
             {
                 largest=this->MapPlaceRecord[j][i];
-                this->row=j;
-                this->colum=i;
+                this->row=i;
+                this->colum=j;
             }
     return largest;
 }
@@ -91,5 +91,17 @@ ifstream& operator>>(ifstream& myfile, memo& m) {
 }
 void memo::SetValueto0(int i,int j)
 {
-    *(this->GetNode(j,i))=0;
+    *(this->GetNode(i,j))=0;
+}
+void memo::operator=(const memo& m1)
+{
+    for(int i=1;i<=memo::BoardRecordSize;i++)
+        {
+            for(int j=1;j<=memo::BoardRecordSize;j++)
+            {
+                this->MapPlaceRecord[i][j]=m1.MapPlaceRecord[i][j];
+                this->row=i;
+                this->colum=j;
+            }
+        }
 }

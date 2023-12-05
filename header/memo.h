@@ -19,4 +19,5 @@ class memo
         int GetLargestNodeColum();
         void DisplayMemo();
         friend ifstream& operator>>(ifstream& myfile,memo&);
+        void operator=(const memo&);
 };
