@@ -7,7 +7,7 @@ const int WIDTH = 1000, HEIGHT = 600;
 
 int main( int argc, char *argv[])
 {
-    bool GameIsRunning = true, leftButtonDown = false, StartGame = false, PlayGame = true, endGame = false, win = false, stop = false;
+    bool GameIsRunning = true, leftButtonDown = false, StartGame = false, PlayGame = false, endGame = false, win = false, stop = false;
     int turn = 0, count = 0;
     Stack HuntList;
     SDL_Event event;
@@ -136,6 +136,9 @@ int main( int argc, char *argv[])
                         {
                             StartGame = false;
                             win=false;
+                            for(int i=1;i<7;i++)
+                                for(int j=1;j<7;j++)
+                                    *(Botmemo.GetNode(j,i))+=(m2.getNode(j,i)->GetPlace())*3000;
                             bPlayer(3, 1, Node::nodeSize);
                             bBot(1, 1, Node::nodeSize);
 
@@ -145,9 +148,6 @@ int main( int argc, char *argv[])
                             count = 0;
                             endGame = false;
                             HuntList.MakeNull();
-                            for(int i=1;i<7;i++)
-                                for(int j=1;j<7;j++)
-                                    *(Botmemo.GetNode(j,i))+=(m2.getNode(j,i)->GetPlace())*500;
                             ShootingPlan=Botmemo;
                         }
                         if(SDL_PointInRect(&mousePos, home_button.getRect()))
@@ -155,6 +155,9 @@ int main( int argc, char *argv[])
                             PlayGame = false;
                             StartGame = false;
                             win=false;
+                            for(int i=1;i<7;i++)
+                                for(int j=1;j<7;j++)
+                                    *(Botmemo.GetNode(j,i))+=(m2.getNode(j,i)->GetPlace())*3000;
                             bPlayer(3, 1, Node::nodeSize);
                             bBot(1, 1, Node::nodeSize);
 
@@ -164,9 +167,6 @@ int main( int argc, char *argv[])
                             count = 0;
                             endGame = false;
                             HuntList.MakeNull();
-                            for(int i=1;i<7;i++)
-                                for(int j=1;j<7;j++)
-                                    *(Botmemo.GetNode(j,i))+=(m2.getNode(j,i)->GetPlace())*500;
                             ShootingPlan=Botmemo;
                         }
                     }
